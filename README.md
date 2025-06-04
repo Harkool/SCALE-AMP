@@ -22,7 +22,7 @@ SCALE-AMP/
 ├── train_mtl.py            # Training script for multi-label classification
 │
 ├── evaluate_mtl.py         # Evaluation script for multi-label task
-├── evaluate_amp.py         # (Optional) Evaluation for binary task
+├── evaluate_amp.py         # Evaluation script for binary task
 ```
 
 ---
@@ -88,8 +88,7 @@ AMP training supports mixed precision and early stopping for efficiency and stab
 
 ## ✅ Evaluation Scripts
 
-
-### 1. AMP Binary Evaluation (`evaluate_amp.py`)
+### 1. AMP Binary Evaluation
 
 Evaluate a binary AMP classification model using:
 
@@ -99,9 +98,21 @@ python evaluate_amp.py \
   --data_path data/Benchmark/Stage-1/AMP.csv \
   --gpu 0
 ```
-### 2. Multi-Label Evaluation (`evaluate_mtl.py`)
 
-After training, you can evaluate a saved model checkpoint using:
+This script reports:
+
+* **Accuracy**
+* **F1 Score**
+* **ROC AUC**
+* **Sensitivity (Recall)**
+* **Specificity**
+* **Confusion Matrix**
+
+---
+
+### 2. Multi-Label Functional Evaluation
+
+Evaluate a multi-label functional prediction model using:
 
 ```bash
 python evaluate_mtl.py \
@@ -119,7 +130,7 @@ This script reports:
 
   * Macro-F1, Macro-AUC, Macro-Accuracy, Hamming Loss
 
-> You can easily extend this script to evaluate all folds or generate ROC curves if needed.
+> You can easily extend these scripts to evaluate multiple folds or generate ROC plots.
 
 ---
 
