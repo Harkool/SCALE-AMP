@@ -98,7 +98,7 @@ python evaluate_amp.py \
   --model_path checkpoints_amp/fold1_best.pt \
   --data_path data/Benchmark/Stage-1/AMP.csv \
   --gpu 0
-
+```
 ### 2. Multi-Label Evaluation (`evaluate_mtl.py`)
 
 After training, you can evaluate a saved model checkpoint using:
