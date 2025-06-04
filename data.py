@@ -23,7 +23,7 @@ class AMPDataset(Dataset):
             data = pd.read_csv(data_file)
 
         data.columns = [col.strip().lower() for col in data.columns]
-        assert 'sequence' in data.columns, "必须包含 sequence 列"
+        assert 'sequence' in data.columns, 
 
         def is_valid(seq):
             return bool(re.fullmatch(r"[ACDEFGHIKLMNPQRSTVWYBXZOU\-]*", seq, flags=re.IGNORECASE))
@@ -36,7 +36,7 @@ class AMPDataset(Dataset):
             label_col = 'label' if 'label' in data.columns else 'amp'
             labels = data[label_col].astype(int).values.reshape(-1, 1)
         else:
-            labels = data[task_label].astype(float).values  # 多标签
+            labels = data[task_label].astype(float).values
         self.targets = labels
 
         if esm_model is None or batch_converter is None:
