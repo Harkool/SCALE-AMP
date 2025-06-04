@@ -26,7 +26,6 @@ def evaluate(model, dataloader, label_list, device):
     y_true = np.vstack(all_trues)
     y_pred = (y_prob > 0.5).astype(int)
 
-    # Mask处理：将 -1 的位置从 y_true 和 y_prob 中排除
     mask = (y_true != -1)
     y_true_masked = np.where(mask, y_true, 0)
 
@@ -37,7 +36,6 @@ def evaluate(model, dataloader, label_list, device):
     y_prob_eval = y_prob[:, valid_cols]
     label_list_eval = np.array(label_list)[valid_cols]
 
-    # 每标签指标
     for i, label in enumerate(label_list_eval):
         true = y_true_eval[:, i]
         pred = y_pred_eval[:, i]
@@ -59,7 +57,6 @@ def evaluate(model, dataloader, label_list, device):
             "Specificity": specificity
         })
 
-    # 总体指标
     macro_f1 = f1_score(y_true_eval, y_pred_eval, average='macro', zero_division=0)
     macro_auc = roc_auc_score(y_true_eval, y_prob_eval, average='macro')
     macro_acc = accuracy_score(y_true_eval.flatten(), y_pred_eval.flatten())
