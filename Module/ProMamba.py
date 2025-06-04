@@ -4,8 +4,7 @@ import torch.nn.functional as F
 
 
 class GatedConv1D(nn.Module):
-    """蛋白质状态路径：门控卷积 + 残差 + 输出投影"""
-    def __init__(self, dim, kernel_size=3, expansion=1):  # expansion=1 表示不升维
+    def __init__(self, dim, kernel_size=3, expansion=1): 
         super().__init__()
         hidden_dim = dim * expansion
         self.norm = nn.LayerNorm(dim)
@@ -16,14 +15,13 @@ class GatedConv1D(nn.Module):
     def forward(self, x):  # [B, L, D]
         residual = x
         x = self.norm(x)
-        x = self.conv(x.transpose(1, 2)).transpose(1, 2)  # [B, L, 2H]
-        v, g = x.chunk(2, dim=-1)                         # [B, L, H], [B, L, H]
-        out = v * torch.sigmoid(g)                        # [B, L, H]
-        out = self.proj_out(out)                          # [B, L, D]
+        x = self.conv(x.transpose(1, 2)).transpose(1, 2)  
+        v, g = x.chunk(2, dim=-1)             
+        out = v * torch.sigmoid(g)
+        out = self.proj_out(out)  
         return residual + out
 
 class LePELinearAttention(nn.Module):
-    """局部位置增强的线性注意力"""
     def __init__(self, dim, num_heads=4, qkv_bias=True):
         super().__init__()
         self.num_heads = num_heads
@@ -36,23 +34,17 @@ class LePELinearAttention(nn.Module):
     def forward(self, x):  # [B, L, C]
         B, L, C = x.shape
         H, D = self.num_heads, self.head_dim
-
         qk = self.qk_proj(x).reshape(B, L, 2, H, D).permute(2, 0, 3, 1, 4)
         q, k = qk[0], qk[1]  # [B, H, L, D]
         v = self.v_proj(x).reshape(B, L, H, D).permute(0, 2, 1, 3)
-
         q = self.elu(q) + 1.0
         k = self.elu(k) + 1.0
-
-        # LePE: 每个 head 使用独立深度卷积增强位置信息
         q = q + self.lepe(q.reshape(B * H, D, L)).reshape(B, H, D, L).permute(0, 1, 3, 2)
         k = k + self.lepe(k.reshape(B * H, D, L)).reshape(B, H, D, L).permute(0, 1, 3, 2)
-
         k_mean = k.mean(dim=2, keepdim=True)  # [B, H, 1, D]
         z = 1 / (torch.matmul(q, k_mean.transpose(-2, -1)) + 1e-6)
         kv = torch.matmul(k.transpose(-2, -1), v) / L
         out = torch.matmul(q, kv) * z
-
         return out.transpose(1, 2).reshape(B, L, C)
 
 
