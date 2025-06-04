@@ -8,7 +8,7 @@ class WeightedBinaryCELoss(nn.Module):
 
     def forward(self, logits, targets):
         probs = torch.sigmoid(logits)
-        probs = torch.clamp(probs, min=1e-7, max=1 - 1e-7)  # 避免 log(0)
+        probs = torch.clamp(probs, min=1e-7, max=1 - 1e-7) 
         
         loss = -self.alpha * targets * torch.log(probs) - (1 - self.alpha) * (1 - targets) * torch.log(1 - probs)
         return loss.mean()
