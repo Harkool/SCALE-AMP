@@ -78,13 +78,13 @@ def evaluate(dataloader, model, device, epoch):
 
 def main():
     parser = argparse.ArgumentParser(description="Train AMP Classifier with 5-fold CV")
-    parser.add_argument("--data", type=str, default="data/Benchmark/Stage-1/AMP.csv")
+    parser.add_argument("--data", type=str, default="data/Benchmark/AMP.csv")
     parser.add_argument("--output_dir", type=str, default="checkpoints_amp_cv")
     parser.add_argument("--epochs", type=int, default=256)
     parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--gpu", type=int, default=0)
-    parser.add_argument("--folds", type=int, default=3)
+    parser.add_argument("--folds", type=int, default=5)
     args = parser.parse_args()
 
     device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
