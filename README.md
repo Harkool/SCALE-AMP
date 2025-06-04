@@ -88,7 +88,18 @@ AMP training supports mixed precision and early stopping for efficiency and stab
 
 ## ✅ Evaluation Scripts
 
-### Multi-Label Evaluation (`evaluate_mtl.py`)
+
+### 1. AMP Binary Evaluation (`evaluate_amp.py`)
+
+Evaluate a binary AMP classification model using:
+
+```bash
+python evaluate_amp.py \
+  --model_path checkpoints_amp/fold1_best.pt \
+  --data_path data/Benchmark/Stage-1/AMP.csv \
+  --gpu 0
+
+### 2. Multi-Label Evaluation (`evaluate_mtl.py`)
 
 After training, you can evaluate a saved model checkpoint using:
 
