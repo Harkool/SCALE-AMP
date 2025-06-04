@@ -1,6 +1,18 @@
 import torch
 import torch.nn as nn
 
+class WeightedBinaryCELoss(nn.Module):
+    def __init__(self, alpha=0.7):
+        super(WeightedBinaryCELoss, self).__init__()
+        self.alpha = alpha
+
+    def forward(self, logits, targets):
+        probs = torch.sigmoid(logits)
+        probs = torch.clamp(probs, min=1e-7, max=1 - 1e-7)  # 避免 log(0)
+        
+        loss = -self.alpha * targets * torch.log(probs) - (1 - self.alpha) * (1 - targets) * torch.log(1 - probs)
+        return loss.mean()
+
 class MultiLabelCASL(nn.Module):
     def __init__(self,
                  gamma_pos=3,
