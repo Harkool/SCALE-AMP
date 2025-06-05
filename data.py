@@ -23,7 +23,7 @@ class AMPDataset(Dataset):
             data = pd.read_csv(data_file)
 
         data.columns = [col.strip().lower() for col in data.columns]
-        assert 'sequence' in data.columns, 
+        assert 'sequence' in data.columns, "Input data must contain a 'sequence' column."
 
         def is_valid(seq):
             return bool(re.fullmatch(r"[ACDEFGHIKLMNPQRSTVWYBXZOU\-]*", seq, flags=re.IGNORECASE))
@@ -39,8 +39,9 @@ class AMPDataset(Dataset):
             labels = data[task_label].astype(float).values
         self.targets = labels
 
+        # ✅ 使用最大模型 esm2_t48_15B_UR50D
         if esm_model is None or batch_converter is None:
-            esm_model, alphabet = esm.pretrained.esm2_t12_35M_UR50D()
+            esm_model, alphabet = esm.pretrained.esm2_t48_15B_UR50D()
             batch_converter = alphabet.get_batch_converter()
         self.esm_model = esm_model.eval()
         if torch.cuda.is_available():
@@ -66,7 +67,7 @@ class AMPDataset(Dataset):
         tokens = tokens.to(device)
 
         with torch.no_grad():
-            representations = self.esm_model(tokens, repr_layers=[12])['representations'][12]
+            representations = self.esm_model(tokens, repr_layers=[48])['representations'][48]
 
         return {
             'input_ids': representations,                  
