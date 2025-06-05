@@ -39,7 +39,6 @@ class AMPDataset(Dataset):
             labels = data[task_label].astype(float).values
         self.targets = labels
 
-        # ✅ 使用最大模型 esm2_t48_15B_UR50D
         if esm_model is None or batch_converter is None:
             esm_model, alphabet = esm.pretrained.esm2_t48_15B_UR50D()
             batch_converter = alphabet.get_batch_converter()
